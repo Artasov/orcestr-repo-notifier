@@ -5,6 +5,9 @@
 
 # Orcestr Repo Notifier
 
+[![Validate](https://github.com/Artasov/orcestr-repo-notifier/actions/workflows/validate.yml/badge.svg)](https://github.com/Artasov/orcestr-repo-notifier/actions/workflows/validate.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
 A small tool for teams that want to see clear development progress without reading raw commits.
 
 It turns repository changes into understandable Telegram updates: what was pushed, what changed, and why it matters for the project.
@@ -37,7 +40,7 @@ Under the hood it uses GitHub Actions and Codex. The repository is checked out o
 
 Create a Telegram bot with BotFather, add it to a group and get the target `chat_id`.
 
-Add repository secrets:
+In the GitHub repository you want to monitor, open `Settings -> Secrets and variables -> Actions` and add repository secrets:
 
 ```text
 OPENAI_API_KEY
@@ -45,7 +48,13 @@ TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID
 ```
 
-Add a workflow:
+Create this file in the same repository you want to monitor:
+
+```text
+.github/workflows/orcestr-repo-notifier.yml
+```
+
+Put this workflow into that file:
 
 ```yaml
 name: Repo update to Telegram
@@ -66,12 +75,16 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: your-org/orcestr-repo-notifier@v1
+      - uses: Artasov/orcestr-repo-notifier@main
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           telegram-chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
 ```
+
+After the first stable release, replace `@main` with a version tag like `@v1`.
+
+On the next push to `main`, GitHub Actions will run the workflow and the bot will post the generated update to Telegram.
 
 ## Modes
 
@@ -106,7 +119,7 @@ jobs:
 ## Product Example
 
 ```yaml
-- uses: your-org/orcestr-repo-notifier@v1
+- uses: Artasov/orcestr-repo-notifier@main
   with:
     openai-api-key: ${{ secrets.OPENAI_API_KEY }}
     telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -120,7 +133,7 @@ jobs:
 ## Technical Example
 
 ```yaml
-- uses: your-org/orcestr-repo-notifier@v1
+- uses: Artasov/orcestr-repo-notifier@main
   with:
     openai-api-key: ${{ secrets.OPENAI_API_KEY }}
     telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -138,6 +151,13 @@ Do not run this action with secrets on untrusted pull request events. For public
 Keep the OpenAI key and Telegram bot token in GitHub secrets only.
 
 The base prompt tells Codex to treat commit messages, diffs and repository files as untrusted input. This reduces prompt-injection risk from changed files, but it does not remove the need to choose safe workflow triggers.
+
+## Project Files
+
+- [CHANGELOG.md](./CHANGELOG.md) - release and development notes.
+- [CONTRIBUTING.md](./CONTRIBUTING.md) - contribution guide.
+- [SECURITY.md](./SECURITY.md) - security policy and reporting notes.
+- [LICENSE](./LICENSE) - MIT license.
 
 ## Orcestr
 
