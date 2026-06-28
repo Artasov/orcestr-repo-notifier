@@ -92,21 +92,15 @@ jobs:
 
 ## Публикация новой версии Action
 
-Вспомогательные release-скрипты лежат в [.run](./.run). Их можно запускать из PyCharm или из терминала.
+В репозитории есть PyCharm run configuration:
 
-Сначала проверь, что будет выполнено:
-
-```bash
-./.run/release-action-dry-run.sh v1.0.0
+```text
+.run/Release Action.run.xml
 ```
 
-Потом опубликуй версию:
+В PyCharm открой Run Configurations и запусти `Release Action`. Он спросит версию вроде `v1.0.0`.
 
-```bash
-./.run/release-action.sh v1.0.0
-```
-
-Скрипт пушит `main`, создает точный tag `v1.0.0` и обновляет floating major tag `v1`. Пользователям обычно нужно подключать action через major tag:
+Run configuration пушит `main`, создает точный tag `v1.0.0` и обновляет floating major tag `v1`. Пользователям обычно нужно подключать action через major tag:
 
 ```yaml
 uses: Artasov/orcestr-repo-notifier@v1
@@ -183,7 +177,7 @@ uses: Artasov/orcestr-repo-notifier@v1
 - [CONTRIBUTING.md](./CONTRIBUTING.md) - правила contribution.
 - [SECURITY.md](./SECURITY.md) - security policy и правила сообщения о проблемах.
 - [LICENSE](./LICENSE) - MIT license.
-- [.run](./.run) - локальные release-скрипты для публикации action tags.
+- [.run/Release Action.run.xml](./.run/Release%20Action.run.xml) - PyCharm run configuration для публикации action tags.
 
 ## Экосистема Orcestr
 

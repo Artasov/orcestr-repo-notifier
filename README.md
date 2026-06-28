@@ -92,21 +92,15 @@ On the next push to `main`, GitHub Actions will run the workflow and the bot wil
 
 ## Publishing a New Action Version
 
-Release helper scripts live in [.run](./.run). They are meant to be launched from PyCharm or from a terminal.
+The repository includes a PyCharm run configuration:
 
-First check what will happen:
-
-```bash
-./.run/release-action-dry-run.sh v1.0.0
+```text
+.run/Release Action.run.xml
 ```
 
-Then publish the version:
+In PyCharm, open Run Configurations and start `Release Action`. It asks for a version like `v1.0.0`.
 
-```bash
-./.run/release-action.sh v1.0.0
-```
-
-The script pushes `main`, creates the exact tag `v1.0.0`, and updates the floating major tag `v1`. Users should normally reference the action through the major tag:
+The run configuration pushes `main`, creates the exact tag `v1.0.0`, and updates the floating major tag `v1`. Users should normally reference the action through the major tag:
 
 ```yaml
 uses: Artasov/orcestr-repo-notifier@v1
@@ -183,7 +177,7 @@ The base prompt tells Codex to treat commit messages, diffs and repository files
 - [CONTRIBUTING.md](./CONTRIBUTING.md) - contribution guide.
 - [SECURITY.md](./SECURITY.md) - security policy and reporting notes.
 - [LICENSE](./LICENSE) - MIT license.
-- [.run](./.run) - local release scripts for publishing action tags.
+- [.run/Release Action.run.xml](./.run/Release%20Action.run.xml) - PyCharm run configuration for publishing action tags.
 
 ## Orcestr Ecosystem
 

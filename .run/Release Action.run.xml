@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Release Action" type="ShConfigurationType">
+    <option name="SCRIPT_TEXT" value="$ErrorActionPreference = &quot;Stop&quot;; $version = Read-Host &quot;Release version, for example v1.0.0&quot;; if ($version -notmatch &quot;^v([0-9]+)\.([0-9]+)\.([0-9]+)(-[0-9A-Za-z.-]+)?$&quot;) { throw &quot;Version must look like v1.0.0 or v1.0.0-beta.1, got: $version&quot; }; $majorTag = &quot;v$($Matches[1])&quot;; function Run-Git([string[]]$ArgsList) { Write-Host &quot;+ git $($ArgsList -join ' ')&quot;; &amp; git @ArgsList; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }; $status = git status --porcelain; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; if ($status) { git status --short; throw &quot;Working tree is not clean. Commit or stash changes before releasing.&quot; }; $branch = git branch --show-current; if ($branch -ne &quot;main&quot;) { throw &quot;Release must be started from main. Current branch: $branch&quot; }; Run-Git @(&quot;fetch&quot;, &quot;origin&quot;, &quot;main&quot;, &quot;--tags&quot;); $originMain = git rev-parse -q --verify &quot;refs/remotes/origin/main&quot; 2&gt;$null; if ($LASTEXITCODE -eq 0) { $base = git merge-base HEAD origin/main; $remoteHead = git rev-parse origin/main; if ($base -ne $remoteHead) { throw &quot;Local main is behind or diverged from origin/main. Run git pull --ff-only first.&quot; } }; $localTag = git rev-parse -q --verify &quot;refs/tags/$version&quot; 2&gt;$null; if ($LASTEXITCODE -eq 0) { throw &quot;Local tag already exists: $version&quot; }; &amp; git ls-remote --exit-code --tags origin &quot;refs/tags/$version&quot; *&gt;$null; if ($LASTEXITCODE -eq 0) { throw &quot;Remote tag already exists: $version&quot; }; if ($LASTEXITCODE -ne 2) { exit $LASTEXITCODE }; Write-Host &quot;Release: $version&quot;; Write-Host &quot;Floating action tag: $majorTag&quot;; Run-Git @(&quot;push&quot;, &quot;origin&quot;, &quot;HEAD:main&quot;); Run-Git @(&quot;tag&quot;, &quot;-a&quot;, $version, &quot;-m&quot;, &quot;Release $version&quot;, &quot;HEAD&quot;); Run-Git @(&quot;push&quot;, &quot;origin&quot;, $version); Run-Git @(&quot;tag&quot;, &quot;-f&quot;, &quot;-a&quot;, $majorTag, &quot;-m&quot;, &quot;Release $version&quot;, &quot;HEAD&quot;); Run-Git @(&quot;push&quot;, &quot;origin&quot;, &quot;refs/tags/$majorTag&quot;, &quot;--force&quot;); Write-Host &quot;Done.&quot;; Write-Host &quot;GitHub Action reference: uses: Artasov/orcestr-repo-notifier@$majorTag&quot;" />
+    <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
+    <option name="SCRIPT_PATH" value="" />
+    <option name="SCRIPT_OPTIONS" value="" />
+    <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="false" />
+    <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+    <option name="INTERPRETER_PATH" value="powershell.exe" />
+    <option name="INTERPRETER_OPTIONS" value="" />
+    <option name="EXECUTE_IN_TERMINAL" value="false" />
+    <option name="EXECUTE_SCRIPT_FILE" value="false" />
+    <method v="2" />
+  </configuration>
+</component>
