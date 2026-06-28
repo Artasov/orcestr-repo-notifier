@@ -79,6 +79,34 @@ TELEGRAM_CHAT_ID
 
 On the next push to `main`, the bot will send a generated update to Telegram.
 
+## Telegram Setup
+
+Create a bot:
+
+1. Open `@BotFather` in Telegram.
+2. Send `/newbot`.
+3. Follow the prompts and copy the token. Use it as `TELEGRAM_BOT_TOKEN`.
+
+Get `TELEGRAM_CHAT_ID`:
+
+1. Add the bot to your group or open a private chat with it.
+2. Send a new message after the bot is added.
+3. Open:
+
+```text
+https://api.telegram.org/bot<TELEGRAM_BOT_TOKEN>/getUpdates
+```
+
+4. Find `chat.id` in the response. Group ids usually look like `-1001234567890`.
+
+For Telegram forum topics, also get `telegram-message-thread-id`:
+
+1. Send a message in the target topic.
+2. Open `getUpdates` again.
+3. Find `message_thread_id` in the message object.
+
+If `getUpdates` is empty, send a fresh message after adding the bot. If the group topic still does not appear, disable bot privacy in `@BotFather` with `/setprivacy`, then send a new message in the topic.
+
 ## Modes
 
 `product` is the default. It writes a user-facing project update: features, UX changes, visible fixes and behavior changes.
