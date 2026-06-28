@@ -4,6 +4,7 @@ import { join } from "node:path";
 const workspace = process.env.GITHUB_WORKSPACE || process.cwd();
 const botToken = process.env.ORCESTR_TELEGRAM_BOT_TOKEN || "";
 const chatId = process.env.ORCESTR_TELEGRAM_CHAT_ID || "";
+const messageThreadId = process.env.ORCESTR_TELEGRAM_MESSAGE_THREAD_ID || "";
 const parseMode = process.env.ORCESTR_TELEGRAM_PARSE_MODE || "none";
 const finalMessage = process.env.ORCESTR_CODEX_FINAL_MESSAGE || readOutputFile();
 
@@ -43,6 +44,10 @@ async function sendMessage(text) {
     disable_web_page_preview: true,
   };
 
+  if (messageThreadId) {
+    body.message_thread_id = Number(messageThreadId);
+  }
+
   if (parseMode && parseMode !== "none") {
     body.parse_mode = parseMode;
   }
@@ -65,6 +70,10 @@ if (!botToken) {
 
 if (!chatId) {
   throw new Error("telegram-chat-id is required.");
+}
+
+if (messageThreadId && !/^\d+$/.test(messageThreadId)) {
+  throw new Error("telegram-message-thread-id must be an integer.");
 }
 
 if (!finalMessage.trim()) {

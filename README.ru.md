@@ -55,6 +55,8 @@ jobs:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           telegram-chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          # Optional: для Telegram forum topic.
+          # telegram-message-thread-id: "123"
           mode: product
           language: ru
           model: gpt-5.5
@@ -104,6 +106,7 @@ TELEGRAM_CHAT_ID
 | `openai-api-key` | required | OpenAI API key для Codex. |
 | `telegram-bot-token` | required | Telegram bot token из BotFather. |
 | `telegram-chat-id` | required | Целевой chat, group или channel id. |
+| `telegram-message-thread-id` | empty | Optional id темы в Telegram forum group. |
 | `model` | `gpt-5.5` | Codex model. |
 | `effort` | `medium` | Reasoning effort. |
 | `mode` | `product` | `product`, `technical` или `hybrid`. |
