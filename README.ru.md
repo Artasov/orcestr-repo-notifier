@@ -96,6 +96,8 @@ TELEGRAM_CHAT_ID
 gh workflow run orcestr-repo-notifier.yml -f task="Tell subscribers about the new analytics module"
 ```
 
+Push context включает stats изменений: количество коммитов, добавленных строк и удаленных строк. Эти значения можно использовать через `custom-prompt`.
+
 ## Настройка Telegram
 
 Создай бота:

@@ -96,6 +96,8 @@ You can also run it with GitHub CLI:
 gh workflow run orcestr-repo-notifier.yml -f task="Tell subscribers about the new analytics module"
 ```
 
+Push context includes change stats: commit count, added lines, and deleted lines. You can reference these values from `custom-prompt`.
+
 ## Telegram Setup
 
 Create a bot:

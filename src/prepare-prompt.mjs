@@ -53,6 +53,27 @@ function redactSecrets(text) {
     .replace(/([0-9]{8,10}:[A-Za-z0-9_-]{25,})/g, "[REDACTED_TELEGRAM_TOKEN]");
 }
 
+function parseCount(text) {
+  const count = Number.parseInt(String(text).trim(), 10);
+  return Number.isFinite(count) ? count : 0;
+}
+
+function parseNumstat(text) {
+  return text.split("\n").reduce((stats, line) => {
+    const [added, deleted] = line.trim().split(/\s+/);
+
+    if (/^\d+$/.test(added)) {
+      stats.added += Number.parseInt(added, 10);
+    }
+
+    if (/^\d+$/.test(deleted)) {
+      stats.deleted += Number.parseInt(deleted, 10);
+    }
+
+    return stats;
+  }, { added: 0, deleted: 0 });
+}
+
 function resolveDiffRange(payload) {
   const before = payload.before || "";
   const after = payload.after || process.env.GITHUB_SHA || "";
@@ -81,6 +102,11 @@ const safeCustomTask = redactSecrets(customTask.trim());
 const compareUrl = payload.compare || (repository && diffRange.before && diffRange.after
   ? `${serverUrl}/${repository}/compare/${diffRange.before}...${diffRange.after}`
   : "");
+const commitCount = hasCustomTask
+  ? 0
+  : Array.isArray(payload.commits) && payload.commits.length > 0
+    ? payload.commits.length
+    : parseCount(runGit(["rev-list", "--count", diffRange.range || "HEAD"]));
 
 const commits = hasCustomTask
   ? runGit(["log", "--oneline", "-20", "HEAD"])
@@ -104,6 +130,11 @@ const diff = hasCustomTask
   : diffRange.range
     ? runGit(["diff", "--find-renames", "--find-copies", "--stat", "--patch", diffRange.range])
     : runGit(["show", "--find-renames", "--find-copies", "--stat", "--patch", "--format=", "HEAD"]);
+const lineStats = hasCustomTask
+  ? { added: 0, deleted: 0 }
+  : parseNumstat(diffRange.range
+    ? runGit(["diff", "--numstat", diffRange.range])
+    : runGit(["show", "--numstat", "--format=", "HEAD"]));
 
 const context = hasCustomTask ? `# Repository Manual Task Context
 
@@ -129,6 +160,12 @@ Actor: ${actor}
 Before: ${diffRange.before || "unknown"}
 After: ${diffRange.after || "unknown"}
 Compare URL: ${compareUrl || "unknown"}
+
+## Change Stats
+
+Commits: ${commitCount}
+Added lines: ${lineStats.added}
+Deleted lines: ${lineStats.deleted}
 
 ## Commits
 
@@ -173,6 +210,7 @@ const messageRules = hasCustomTask
 - Do not include repository name, branch, commit hashes, or compare URL unless the manual task explicitly asks for them.`
   : `- Use .orcestr-repo-notifier/context.md as the event context, but also inspect relevant repository files to understand product and project impact.
 - Automatic push updates are for meaningful product or project progress that subscribers or product stakeholders should know about.
+- When writing a push update, use the Change Stats from context if the custom instructions ask for commits or line counts.
 - Output exactly ORCESTR_NOTIFY_SKIP only when the entire push is formatting-only: formatter/linter autofix, whitespace, import sorting, generated file reformatting, or equivalent mechanical cleanup with no semantic, configuration, documentation, workflow, or behavior change.
 - Do not skip meaningful CI/CD, workflow, notifier, documentation, internal tooling, reliability, or maintenance changes. Summarize them concretely as project progress when they matter.
 - If many changes are the same kind of work, group them into one concise bullet instead of spreading the same idea across multiple bullets.
