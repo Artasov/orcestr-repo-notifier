@@ -1,0 +1,101 @@
+name: Orcestr Repo Notifier
+description: Run Codex on a repository change and send a product or technical update to Telegram.
+
+inputs:
+  openai-api-key:
+    description: OpenAI API key used by openai/codex-action.
+    required: true
+  telegram-bot-token:
+    description: Telegram bot token from BotFather.
+    required: true
+  telegram-chat-id:
+    description: Telegram chat, group, or channel id.
+    required: true
+  model:
+    description: Codex model.
+    required: false
+    default: gpt-5.5
+  effort:
+    description: Codex reasoning effort.
+    required: false
+    default: medium
+  mode:
+    description: Message mode. Use product, technical, or hybrid.
+    required: false
+    default: product
+  language:
+    description: Output language.
+    required: false
+    default: ru
+  custom-prompt:
+    description: Extra instructions appended to the default notifier prompt.
+    required: false
+    default: ""
+  sandbox:
+    description: Codex sandbox mode.
+    required: false
+    default: read-only
+  safety-strategy:
+    description: Codex Action safety strategy. Use drop-sudo, unprivileged-user, read-only, or unsafe.
+    required: false
+    default: drop-sudo
+  codex-args:
+    description: Extra codex exec arguments passed to openai/codex-action.
+    required: false
+    default: ""
+  max-diff-chars:
+    description: Maximum git diff characters included in the context file.
+    required: false
+    default: "30000"
+  telegram-parse-mode:
+    description: Telegram parse mode. Use none, HTML, Markdown, or MarkdownV2.
+    required: false
+    default: none
+  dry-run:
+    description: Run Codex but skip Telegram sending.
+    required: false
+    default: "false"
+
+outputs:
+  final-message:
+    description: Final message returned by Codex.
+    value: ${{ steps.codex.outputs.final-message }}
+
+runs:
+  using: composite
+  steps:
+    - name: Ensure Node.js available
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20"
+
+    - name: Prepare Codex prompt
+      shell: bash
+      env:
+        ORCESTR_NOTIFIER_MODE: ${{ inputs.mode }}
+        ORCESTR_NOTIFIER_LANGUAGE: ${{ inputs.language }}
+        ORCESTR_NOTIFIER_CUSTOM_PROMPT: ${{ inputs.custom-prompt }}
+        ORCESTR_NOTIFIER_MAX_DIFF_CHARS: ${{ inputs.max-diff-chars }}
+      run: node "$GITHUB_ACTION_PATH/src/prepare-prompt.mjs"
+
+    - name: Run Codex
+      id: codex
+      uses: openai/codex-action@v1
+      with:
+        openai-api-key: ${{ inputs.openai-api-key }}
+        prompt-file: .orcestr-repo-notifier/prompt.md
+        output-file: .orcestr-repo-notifier/codex-output.md
+        model: ${{ inputs.model }}
+        effort: ${{ inputs.effort }}
+        sandbox: ${{ inputs.sandbox }}
+        safety-strategy: ${{ inputs.safety-strategy }}
+        codex-args: ${{ inputs.codex-args }}
+
+    - name: Send Telegram message
+      if: ${{ inputs.dry-run != 'true' }}
+      shell: bash
+      env:
+        ORCESTR_TELEGRAM_BOT_TOKEN: ${{ inputs.telegram-bot-token }}
+        ORCESTR_TELEGRAM_CHAT_ID: ${{ inputs.telegram-chat-id }}
+        ORCESTR_TELEGRAM_PARSE_MODE: ${{ inputs.telegram-parse-mode }}
+      run: node "$GITHUB_ACTION_PATH/src/send-telegram.mjs"

@@ -1,0 +1,29 @@
+name: Technical repo update to Telegram
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: your-org/orcestr-repo-notifier@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          telegram-chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          mode: technical
+          model: gpt-5.5
+          effort: high
+          custom-prompt: |
+            Mention risky changes, config changes, migrations, background jobs, and deployment notes if present.
