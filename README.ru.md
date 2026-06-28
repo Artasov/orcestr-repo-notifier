@@ -21,6 +21,8 @@
 
 Открой action в [GitHub Marketplace](https://github.com/marketplace/actions/orcestr-repo-notifier) или добавь вручную.
 
+Marketplace snippet показывает только как сослаться на action. Используй полный workflow ниже, чтобы правильно были настроены checkout, secrets и prompt.
+
 В репозитории, который нужно отслеживать, создай:
 
 ```text
@@ -53,6 +55,16 @@ jobs:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           telegram-chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          mode: product
+          language: ru
+          model: gpt-5.5
+          effort: medium
+          custom-prompt: |
+            Пиши короткое Telegram-сообщение для владельца продукта и команды.
+            Объясняй, что реально поменялось в продукте, а не просто в коде.
+            Не перечисляй все файлы.
+            Не используй технический жаргон без необходимости.
+            Если изменение техническое, объясни влияние на стабильность, скорость, UX или поддержку.
 ```
 
 Добавь repository secrets в `Settings -> Secrets and variables -> Actions`:

@@ -21,6 +21,8 @@ Part of the [Orcestr](https://orcestr.com) ecosystem.
 
 Open the action in [GitHub Marketplace](https://github.com/marketplace/actions/orcestr-repo-notifier), or add it manually.
 
+The Marketplace snippet only shows how to reference the action. Use the full workflow below so checkout, secrets and prompt settings are configured correctly.
+
 In the repository you want to monitor, create:
 
 ```text
@@ -53,6 +55,16 @@ jobs:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           telegram-chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          mode: product
+          language: ru
+          model: gpt-5.5
+          effort: medium
+          custom-prompt: |
+            Write a short Telegram update for the product owner and team.
+            Explain what changed in the product, not just what changed in code.
+            Do not list every file.
+            Avoid technical jargon unless it matters.
+            If the change is technical, explain its impact on stability, speed, UX or maintenance.
 ```
 
 Add repository secrets in `Settings -> Secrets and variables -> Actions`:
