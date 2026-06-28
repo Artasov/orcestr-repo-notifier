@@ -5,60 +5,29 @@
 
 # Orcestr Repo Notifier
 
+[![Marketplace](https://img.shields.io/badge/GitHub%20Marketplace-Orcestr%20Repo%20Notifier-blue)](https://github.com/marketplace/actions/orcestr-repo-notifier)
 [![Validate](https://github.com/Artasov/orcestr-repo-notifier/actions/workflows/validate.yml/badge.svg)](https://github.com/Artasov/orcestr-repo-notifier/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
+Turn GitHub pushes into clear Telegram updates.
+
+Helps team leads, founders, product owners and developers see real development progress without reading raw commits. After a push, it uses Codex to inspect the repository change and writes a short Telegram update: what changed, what was shipped, and why it matters.
+
+It can be used for private team updates or for keeping a public project history without writing every post manually.
+
 Part of the [Orcestr](https://orcestr.com) ecosystem.
 
-Links: [main website](https://orcestr.com) · [Orcestr overview repository](https://github.com/Artasov/orcestr-overview)
+## Install
 
-A small tool for teams that want to see clear development progress without reading raw commits.
+Open the action in [GitHub Marketplace](https://github.com/marketplace/actions/orcestr-repo-notifier), or add it manually.
 
-It turns repository changes into understandable Telegram updates: what was pushed, what changed, and why it matters for the project.
-
-For team leads, founders and product owners, it makes day-to-day engineering progress easier to follow. For developers and open-source maintainers, it helps keep a public history of changes after every update without writing posts manually.
-
-It is part of the unified Orcestr open-source platform: a growing set of developer tools, workflow primitives and product infrastructure extracted from real product work.
-
-## Why
-
-Most repository notifications are too technical for product chats and too shallow for public updates. They show commit messages, file names or raw diffs, but they rarely explain the real progress.
-
-This action is designed to answer the useful questions: what happened, what changed for users or the project, and what the team should notice.
-
-## How it works
-
-```text
-push to GitHub
-  -> actions/checkout@v4 with fetch-depth: 0
-  -> Orcestr Repo Notifier prepares change context
-  -> openai/codex-action@v1 runs Codex on the checkout
-  -> the final message is sent to Telegram
-```
-
-The action is intentionally serverless. There is no Orcestr backend, webhook service or database. The user's own GitHub Actions runner does the work.
-
-Under the hood it uses GitHub Actions and Codex. The repository is checked out on the runner, change context is prepared, and Codex writes the final Telegram-ready message.
-
-## Quick Start
-
-Create a Telegram bot with BotFather, add it to a group and get the target `chat_id`.
-
-In the GitHub repository you want to monitor, open `Settings -> Secrets and variables -> Actions` and add repository secrets:
-
-```text
-OPENAI_API_KEY
-TELEGRAM_BOT_TOKEN
-TELEGRAM_CHAT_ID
-```
-
-Create this file in the same repository you want to monitor:
+In the repository you want to monitor, create:
 
 ```text
 .github/workflows/orcestr-repo-notifier.yml
 ```
 
-Put this workflow into that file:
+Add this workflow:
 
 ```yaml
 name: Repo update to Telegram
@@ -79,112 +48,69 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: Artasov/orcestr-repo-notifier@main
+      - uses: Artasov/orcestr-repo-notifier@v1
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           telegram-chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
 ```
 
-After the first stable release, replace `@main` with a version tag like `@v1`.
-
-On the next push to `main`, GitHub Actions will run the workflow and the bot will post the generated update to Telegram.
-
-## Publishing a New Action Version
-
-The repository includes a PyCharm run configuration:
+Add repository secrets in `Settings -> Secrets and variables -> Actions`:
 
 ```text
-.run/Release Action.run.xml
+OPENAI_API_KEY
+TELEGRAM_BOT_TOKEN
+TELEGRAM_CHAT_ID
 ```
 
-In PyCharm, open Run Configurations and start `Release Action`. It asks for a version like `v1.0.0`.
-
-The run configuration pushes `main`, creates the exact tag `v1.0.0`, and updates the floating major tag `v1`. Users should normally reference the action through the major tag:
-
-```yaml
-uses: Artasov/orcestr-repo-notifier@v1
-```
+On the next push to `main`, the bot will send a generated update to Telegram.
 
 ## Modes
 
-`product` writes a user-facing project update: features, UX changes, visible fixes and behavior changes.
+`product` is the default. It writes a user-facing project update: features, UX changes, visible fixes and behavior changes.
 
-`technical` writes an engineering update: implementation changes, risks, migrations, configuration and operational notes.
+`technical` writes an engineering update: implementation changes, risks, configuration and operational notes.
 
 `hybrid` starts with product impact and adds short engineering notes.
 
-## Inputs
-
-`model` defaults to `gpt-5.5`.
-
-`effort` defaults to `medium`.
-
-`mode` defaults to `product`.
-
-`language` defaults to `ru`.
-
-`custom-prompt` appends project-specific instructions to the base prompt.
-
-`sandbox` defaults to `read-only`, so Codex can inspect the repository and git context without editing files.
-
-`safety-strategy` defaults to `drop-sudo`, the default safe strategy of `openai/codex-action` for Linux and macOS runners. Use `ubuntu-latest` unless you have a strong reason not to.
-
-`max-diff-chars` limits the diff sample added to the context file. Codex can still inspect files from the checkout.
-
-`telegram-parse-mode` defaults to `none`, so Telegram formatting does not break the generated message. It can be set to `HTML`, `Markdown` or `MarkdownV2`.
-
-`dry-run: true` runs Codex but skips Telegram sending.
-
-## Product Example
+Example:
 
 ```yaml
-- uses: Artasov/orcestr-repo-notifier@main
-  with:
-    openai-api-key: ${{ secrets.OPENAI_API_KEY }}
-    telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-    telegram-chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
-    mode: product
-    custom-prompt: |
-      Write like a short Telegram post for a product team.
-      Do not mention internal classes, functions or file names unless they are important for understanding the change.
-```
-
-## Technical Example
-
-```yaml
-- uses: Artasov/orcestr-repo-notifier@main
+- uses: Artasov/orcestr-repo-notifier@v1
   with:
     openai-api-key: ${{ secrets.OPENAI_API_KEY }}
     telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
     telegram-chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
     mode: technical
     effort: high
-    custom-prompt: |
-      Mention migrations, background jobs, configuration changes, deployment risks and important tests when present.
 ```
+
+## Inputs
+
+| Input | Default | Description |
+| --- | --- | --- |
+| `openai-api-key` | required | OpenAI API key for Codex. |
+| `telegram-bot-token` | required | Telegram bot token from BotFather. |
+| `telegram-chat-id` | required | Target chat, group or channel id. |
+| `model` | `gpt-5.5` | Codex model. |
+| `effort` | `medium` | Reasoning effort. |
+| `mode` | `product` | `product`, `technical` or `hybrid`. |
+| `language` | `ru` | Output language. |
+| `custom-prompt` | empty | Extra instructions for the generated message. |
+| `max-diff-chars` | `30000` | Diff sample limit passed to Codex. |
+| `dry-run` | `false` | Run Codex but skip Telegram sending. |
 
 ## Security
 
-Do not run this action with secrets on untrusted pull request events. For public repositories, start with `push` events on protected branches.
+Do not run this action with secrets on untrusted pull request events. Start with `push` events on protected branches.
 
-Keep the OpenAI key and Telegram bot token in GitHub secrets only.
+Keep `OPENAI_API_KEY`, `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` in GitHub Actions secrets only.
 
-The base prompt tells Codex to treat commit messages, diffs and repository files as untrusted input. This reduces prompt-injection risk from changed files, but it does not remove the need to choose safe workflow triggers.
+## Links
 
-## Project Files
-
-- [CONTRIBUTING.md](./CONTRIBUTING.md) - contribution guide.
-- [SECURITY.md](./SECURITY.md) - security policy and reporting notes.
-- [LICENSE](./LICENSE) - MIT license.
-- [.run/Release Action.run.xml](./.run/Release%20Action.run.xml) - PyCharm run configuration for publishing action tags.
-
-## Orcestr Ecosystem
-
-Orcestr Repo Notifier is one piece of the broader Orcestr direction: practical product surfaces and open-source infrastructure built from real workflows.
-
-Useful links:
-
-- [Main Orcestr website](https://orcestr.com)
-- [Orcestr overview repository](https://github.com/Artasov/orcestr-overview)
-- [Orcestr UI](https://github.com/Artasov/orcestr-ui)
+- [GitHub Marketplace](https://github.com/marketplace/actions/orcestr-repo-notifier)
+- [Orcestr website](https://orcestr.com)
+- [Orcestr overview](https://github.com/Artasov/orcestr-overview)
+- [Contributing](./CONTRIBUTING.md)
+- [Security](./SECURITY.md)
+- [License](./LICENSE)
