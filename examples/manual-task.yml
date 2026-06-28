@@ -1,10 +1,6 @@
-name: Repo update to Telegram
+name: Manual Telegram update
 
 on:
-  push:
-    branches:
-      - main
-
   workflow_dispatch:
     inputs:
       task:
@@ -23,9 +19,11 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: your-org/orcestr-repo-notifier@v1
+      - uses: Artasov/orcestr-repo-notifier@v1
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           telegram-chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
-          custom-task: ${{ github.event.inputs.task }}
+          custom-task: ${{ inputs.task }}
+          language: en
+          mode: product

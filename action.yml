@@ -39,6 +39,10 @@ inputs:
     description: Extra instructions appended to the default notifier prompt.
     required: false
     default: ""
+  custom-task:
+    description: Manual task for workflow_dispatch runs. When set, Codex inspects the repository and writes a Telegram message for this task instead of summarizing the push diff.
+    required: false
+    default: ""
   sandbox:
     description: Codex sandbox mode.
     required: false
@@ -83,6 +87,7 @@ runs:
         ORCESTR_NOTIFIER_MODE: ${{ inputs.mode }}
         ORCESTR_NOTIFIER_LANGUAGE: ${{ inputs.language }}
         ORCESTR_NOTIFIER_CUSTOM_PROMPT: ${{ inputs.custom-prompt }}
+        ORCESTR_NOTIFIER_CUSTOM_TASK: ${{ inputs.custom-task }}
         ORCESTR_NOTIFIER_MAX_DIFF_CHARS: ${{ inputs.max-diff-chars }}
       run: node "$GITHUB_ACTION_PATH/src/prepare-prompt.mjs"
 

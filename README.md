@@ -11,7 +11,7 @@
 
 Turn GitHub pushes into clear Telegram updates.
 
-Helps team leads, founders, product owners and developers see real development progress without reading raw commits. After a push, it uses Codex to inspect the repository change and writes a short Telegram update: what changed, what was shipped, and why it matters.
+Helps team leads, founders, product owners and developers see real development progress without reading raw commits. After a push, it uses Codex to inspect the repository change and writes a short Telegram update: what changed, what was shipped, and why it matters. It can also run manually with any prompt, so Codex can inspect the project and write a specific Telegram post on demand.
 
 It can be used for private team updates or for keeping a public project history without writing every post manually.
 
@@ -39,6 +39,13 @@ on:
     branches:
       - main
 
+  workflow_dispatch:
+    inputs:
+      task:
+        description: What should Codex write about?
+        required: true
+        type: string
+
 jobs:
   notify:
     runs-on: ubuntu-latest
@@ -57,6 +64,8 @@ jobs:
           telegram-chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
           # Optional: use this for a Telegram forum topic.
           # telegram-message-thread-id: "123"
+          # Optional: filled when the workflow is started manually.
+          custom-task: ${{ github.event.inputs.task }}
           mode: product
           language: ru
           model: gpt-5.5
@@ -78,6 +87,14 @@ TELEGRAM_CHAT_ID
 ```
 
 On the next push to `main`, the bot will send a generated update to Telegram.
+
+To send a manual update, open `Actions -> Repo update to Telegram -> Run workflow`, enter a task, and run it. Codex will inspect the checked-out repository and write a Telegram message for that task instead of summarizing a push.
+
+You can also run it with GitHub CLI:
+
+```bash
+gh workflow run orcestr-repo-notifier.yml -f task="Tell subscribers about the new analytics module"
+```
 
 ## Telegram Setup
 
@@ -140,6 +157,7 @@ Example:
 | `mode` | `product` | `product`, `technical` or `hybrid`. |
 | `language` | `ru` | Output language. |
 | `custom-prompt` | empty | Extra instructions for the generated message. |
+| `custom-task` | empty | Manual task for `workflow_dispatch`. When set, Codex writes for this task instead of summarizing the push diff. |
 | `max-diff-chars` | `30000` | Diff sample limit passed to Codex. |
 | `dry-run` | `false` | Run Codex but skip Telegram sending. |
 

@@ -11,7 +11,7 @@
 
 Превращает GitHub pushes в понятные Telegram-обновления.
 
-Помогает team lead, founder, product owner и разработчикам видеть реальный прогресс разработки без чтения сырых коммитов. После push использует Codex, анализирует изменение в репозитории и пишет короткое Telegram-сообщение: что изменилось, что было сделано и почему это важно.
+Помогает team lead, founder, product owner и разработчикам видеть реальный прогресс разработки без чтения сырых коммитов. После push использует Codex, анализирует изменение в репозитории и пишет короткое Telegram-сообщение: что изменилось, что было сделано и почему это важно. Также можно запустить workflow вручную с любым prompt: Codex посмотрит проект и напишет отдельный Telegram-пост по задаче.
 
 Можно использовать для внутренних командных обновлений или для публичной истории проекта, чтобы не писать каждый пост вручную.
 
@@ -39,6 +39,13 @@ on:
     branches:
       - main
 
+  workflow_dispatch:
+    inputs:
+      task:
+        description: Что должен написать Codex?
+        required: true
+        type: string
+
 jobs:
   notify:
     runs-on: ubuntu-latest
@@ -57,6 +64,8 @@ jobs:
           telegram-chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
           # Optional: для Telegram forum topic.
           # telegram-message-thread-id: "123"
+          # Optional: заполняется при ручном запуске workflow.
+          custom-task: ${{ github.event.inputs.task }}
           mode: product
           language: ru
           model: gpt-5.5
@@ -78,6 +87,14 @@ TELEGRAM_CHAT_ID
 ```
 
 При следующем push в `main` бот отправит сгенерированное обновление в Telegram.
+
+Чтобы отправить ручное сообщение, открой `Actions -> Repo update to Telegram -> Run workflow`, введи задачу и запусти workflow. Codex изучит checkout репозитория и напишет Telegram-сообщение по этой задаче, а не пересказ push.
+
+То же самое можно запустить через GitHub CLI:
+
+```bash
+gh workflow run orcestr-repo-notifier.yml -f task="Tell subscribers about the new analytics module"
+```
 
 ## Настройка Telegram
 
@@ -140,6 +157,7 @@ https://api.telegram.org/bot<TELEGRAM_BOT_TOKEN>/getUpdates
 | `mode` | `product` | `product`, `technical` или `hybrid`. |
 | `language` | `ru` | Язык сообщения. |
 | `custom-prompt` | empty | Дополнительные инструкции для сообщения. |
+| `custom-task` | empty | Ручная задача для `workflow_dispatch`. Если заполнена, Codex пишет по этой задаче вместо пересказа push diff. |
 | `max-diff-chars` | `30000` | Лимит diff sample для Codex. |
 | `dry-run` | `false` | Запустить Codex, но не отправлять сообщение в Telegram. |
 
