@@ -171,14 +171,14 @@ const messageRules = hasCustomTask
 - Use repository files and recent commit context only to make the message accurate.
 - Do not summarize the latest push unless the manual task asks for it.
 - Do not include repository name, branch, commit hashes, or compare URL unless the manual task explicitly asks for them.`
-  : `- Use .orcestr-repo-notifier/context.md as the event context, but also inspect relevant repository files to understand product impact.
-- Automatic push updates are only for meaningful product progress that subscribers or product stakeholders should know about.
-- If the push only contains formatting, linting, whitespace, import sorting, generated lockfile churn, generated API/schema reformatting, documentation, CI/workflow changes, notifier changes, internal communication tooling, repo maintenance, or cleanup with no real user-facing product impact, output exactly: ORCESTR_NOTIFY_SKIP
-- If the best message would say that no visible app behavior changed, output exactly: ORCESTR_NOTIFY_SKIP
-- If the change is too small, too internal, or only about how updates are communicated, output exactly: ORCESTR_NOTIFY_SKIP
+  : `- Use .orcestr-repo-notifier/context.md as the event context, but also inspect relevant repository files to understand product and project impact.
+- Automatic push updates are for meaningful product or project progress that subscribers or product stakeholders should know about.
+- Output exactly ORCESTR_NOTIFY_SKIP only when the entire push is formatting-only: formatter/linter autofix, whitespace, import sorting, generated file reformatting, or equivalent mechanical cleanup with no semantic, configuration, documentation, workflow, or behavior change.
+- Do not skip meaningful CI/CD, workflow, notifier, documentation, internal tooling, reliability, or maintenance changes. Summarize them concretely as project progress when they matter.
+- If many changes are the same kind of work, group them into one concise bullet instead of spreading the same idea across multiple bullets.
 - Include repository name, branch, and compare URL when available.
 - If impact is unclear, say what changed from the code structure without inventing product claims.
-- Do not invent warnings, follow-up checks, release-readiness concerns, retest requests, or "no visible behavior changed" bullets. Skip instead.`;
+- Do not invent warnings, follow-up checks, release-readiness concerns, retest requests, or "no visible behavior changed" bullets.`;
 
 const prompt = `You are Orcestr Repo Notifier.
 

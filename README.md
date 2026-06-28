@@ -86,7 +86,7 @@ TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID
 ```
 
-On the next push to `main`, the bot will send a generated update to Telegram. If Codex decides that a push is only formatting, linting, whitespace cleanup, import sorting, or another no-op change with no useful subscriber-facing impact, it can return `ORCESTR_NOTIFY_SKIP` and the action will skip Telegram delivery.
+On the next push to `main`, the bot will send a generated update to Telegram. If the whole push is formatting-only, such as formatter/linter autofix, whitespace, import sorting, or generated file reformatting with no semantic change, Codex can return `ORCESTR_NOTIFY_SKIP` and the action will skip Telegram delivery.
 
 To send a manual update, open `Actions -> Repo update to Telegram -> Run workflow`, enter a task, and run it. Codex will inspect the checked-out repository and write a Telegram message for that task instead of summarizing a push. `custom-prompt` still applies in manual mode, so you can define your message format once in YAML.
 

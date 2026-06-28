@@ -86,7 +86,7 @@ TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID
 ```
 
-При следующем push в `main` бот отправит сгенерированное обновление в Telegram. Если Codex поймет, что push содержит только форматирование, linting, whitespace cleanup, сортировку импортов или другое no-op изменение без полезного эффекта для подписчиков, он может вернуть `ORCESTR_NOTIFY_SKIP`, и action ничего не отправит в Telegram.
+При следующем push в `main` бот отправит сгенерированное обновление в Telegram. Если весь push состоит только из форматирования, например formatter/linter autofix, whitespace, сортировки импортов или переформатирования generated files без смыслового изменения, Codex может вернуть `ORCESTR_NOTIFY_SKIP`, и action ничего не отправит в Telegram.
 
 Чтобы отправить ручное сообщение, открой `Actions -> Repo update to Telegram -> Run workflow`, введи задачу и запусти workflow. Codex изучит checkout репозитория и напишет Telegram-сообщение по этой задаче, а не пересказ push. `custom-prompt` продолжает применяться в ручном режиме, поэтому формат сообщения можно один раз задать в YAML.
 
