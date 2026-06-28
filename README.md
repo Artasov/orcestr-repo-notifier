@@ -5,17 +5,19 @@
 
 # Orcestr Repo Notifier
 
-Orcestr Repo Notifier is a GitHub Action that runs Codex after every push, asks it to inspect the checked-out repository, and sends a clear project update to Telegram.
+A small tool for teams that want to see clear development progress without reading raw commits.
+
+It turns repository changes into understandable Telegram updates: what was pushed, what changed, and why it matters for the project.
+
+For team leads, founders and product owners, it makes day-to-day engineering progress easier to follow. For developers and open-source maintainers, it helps keep a public history of changes after every update without writing posts manually.
 
 It is part of the unified Orcestr open-source platform: a growing set of developer tools, workflow primitives and product infrastructure extracted from real product work.
 
-The goal is simple: every repository should be able to explain what changed in the product, not just list commits and files.
-
 ## Why
 
-Most repository notifications are too technical for product chats and too shallow for engineering chats. They show commit messages, file names or raw diffs, but they rarely explain the real impact.
+Most repository notifications are too technical for product chats and too shallow for public updates. They show commit messages, file names or raw diffs, but they rarely explain the real progress.
 
-Orcestr Repo Notifier gives Codex the full checkout, the push context, changed files and a diff sample. Codex can then inspect the relevant repository files and write a Telegram-ready message: product update, technical update or a mixed summary.
+This action is designed to answer the useful questions: what happened, what changed for users or the project, and what the team should notice.
 
 ## How it works
 
@@ -28,6 +30,8 @@ push to GitHub
 ```
 
 The action is intentionally serverless. There is no Orcestr backend, webhook service or database. The user's own GitHub Actions runner does the work.
+
+Under the hood it uses GitHub Actions and Codex. The repository is checked out on the runner, change context is prepared, and Codex writes the final Telegram-ready message.
 
 ## Quick Start
 
