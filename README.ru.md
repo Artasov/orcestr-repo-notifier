@@ -8,6 +8,10 @@
 [![Validate](https://github.com/Artasov/orcestr-repo-notifier/actions/workflows/validate.yml/badge.svg)](https://github.com/Artasov/orcestr-repo-notifier/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
+Часть экосистемы [Orcestr](https://orcestr.com).
+
+Ссылки: [основной сайт](https://orcestr.com) · [основной overview-репозиторий Orcestr](https://github.com/Artasov/orcestr-overview)
+
 Небольшой инструмент для команд, которые хотят видеть понятный прогресс разработки без чтения сырых коммитов.
 
 Он превращает изменения в репозитории в понятные Telegram-обновления: что запушили, что изменилось и почему это важно для проекта.
@@ -86,6 +90,28 @@ jobs:
 
 При следующем push в `main` GitHub Actions запустит workflow, а бот отправит сгенерированное обновление в Telegram.
 
+## Публикация новой версии Action
+
+Вспомогательные release-скрипты лежат в [.run](./.run). Их можно запускать из PyCharm или из терминала.
+
+Сначала проверь, что будет выполнено:
+
+```bash
+./.run/release-action-dry-run.sh v1.0.0
+```
+
+Потом опубликуй версию:
+
+```bash
+./.run/release-action.sh v1.0.0
+```
+
+Скрипт пушит `main`, создает точный tag `v1.0.0` и обновляет floating major tag `v1`. Пользователям обычно нужно подключать action через major tag:
+
+```yaml
+uses: Artasov/orcestr-repo-notifier@v1
+```
+
 ## Режимы
 
 `product` пишет продуктовый update: фичи, UX-изменения, видимые исправления и изменения поведения.
@@ -157,9 +183,14 @@ jobs:
 - [CONTRIBUTING.md](./CONTRIBUTING.md) - правила contribution.
 - [SECURITY.md](./SECURITY.md) - security policy и правила сообщения о проблемах.
 - [LICENSE](./LICENSE) - MIT license.
+- [.run](./.run) - локальные release-скрипты для публикации action tags.
 
-## Orcestr
+## Экосистема Orcestr
 
 Orcestr Repo Notifier - одна часть общего направления Orcestr: практические product surfaces и open-source infrastructure, собранные из реальных workflows.
 
-Публичное описание см. в [orcestr-overview](https://github.com/Artasov/orcestr-overview).
+Полезные ссылки:
+
+- [Основной сайт Orcestr](https://orcestr.com)
+- [Основной overview-репозиторий Orcestr](https://github.com/Artasov/orcestr-overview)
+- [Orcestr UI](https://github.com/Artasov/orcestr-ui)

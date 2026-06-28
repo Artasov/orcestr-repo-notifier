@@ -8,6 +8,10 @@
 [![Validate](https://github.com/Artasov/orcestr-repo-notifier/actions/workflows/validate.yml/badge.svg)](https://github.com/Artasov/orcestr-repo-notifier/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
+Part of the [Orcestr](https://orcestr.com) ecosystem.
+
+Links: [main website](https://orcestr.com) · [Orcestr overview repository](https://github.com/Artasov/orcestr-overview)
+
 A small tool for teams that want to see clear development progress without reading raw commits.
 
 It turns repository changes into understandable Telegram updates: what was pushed, what changed, and why it matters for the project.
@@ -86,6 +90,28 @@ After the first stable release, replace `@main` with a version tag like `@v1`.
 
 On the next push to `main`, GitHub Actions will run the workflow and the bot will post the generated update to Telegram.
 
+## Publishing a New Action Version
+
+Release helper scripts live in [.run](./.run). They are meant to be launched from PyCharm or from a terminal.
+
+First check what will happen:
+
+```bash
+./.run/release-action-dry-run.sh v1.0.0
+```
+
+Then publish the version:
+
+```bash
+./.run/release-action.sh v1.0.0
+```
+
+The script pushes `main`, creates the exact tag `v1.0.0`, and updates the floating major tag `v1`. Users should normally reference the action through the major tag:
+
+```yaml
+uses: Artasov/orcestr-repo-notifier@v1
+```
+
 ## Modes
 
 `product` writes a user-facing project update: features, UX changes, visible fixes and behavior changes.
@@ -157,9 +183,14 @@ The base prompt tells Codex to treat commit messages, diffs and repository files
 - [CONTRIBUTING.md](./CONTRIBUTING.md) - contribution guide.
 - [SECURITY.md](./SECURITY.md) - security policy and reporting notes.
 - [LICENSE](./LICENSE) - MIT license.
+- [.run](./.run) - local release scripts for publishing action tags.
 
-## Orcestr
+## Orcestr Ecosystem
 
 Orcestr Repo Notifier is one piece of the broader Orcestr direction: practical product surfaces and open-source infrastructure built from real workflows.
 
-See the public overview in [orcestr-overview](https://github.com/Artasov/orcestr-overview).
+Useful links:
+
+- [Main Orcestr website](https://orcestr.com)
+- [Orcestr overview repository](https://github.com/Artasov/orcestr-overview)
+- [Orcestr UI](https://github.com/Artasov/orcestr-ui)
