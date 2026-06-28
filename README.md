@@ -154,7 +154,6 @@ The base prompt tells Codex to treat commit messages, diffs and repository files
 
 ## Project Files
 
-- [CHANGELOG.md](./CHANGELOG.md) - release and development notes.
 - [CONTRIBUTING.md](./CONTRIBUTING.md) - contribution guide.
 - [SECURITY.md](./SECURITY.md) - security policy and reporting notes.
 - [LICENSE](./LICENSE) - MIT license.

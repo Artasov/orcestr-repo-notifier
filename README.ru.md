@@ -154,7 +154,6 @@ jobs:
 
 ## Файлы проекта
 
-- [CHANGELOG.md](./CHANGELOG.md) - release и development notes.
 - [CONTRIBUTING.md](./CONTRIBUTING.md) - правила contribution.
 - [SECURITY.md](./SECURITY.md) - security policy и правила сообщения о проблемах.
 - [LICENSE](./LICENSE) - MIT license.
