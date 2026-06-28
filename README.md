@@ -86,9 +86,9 @@ TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID
 ```
 
-On the next push to `main`, the bot will send a generated update to Telegram.
+On the next push to `main`, the bot will send a generated update to Telegram. If Codex decides that a push is only formatting, linting, whitespace cleanup, import sorting, or another no-op change with no useful subscriber-facing impact, it can return `ORCESTR_NOTIFY_SKIP` and the action will skip Telegram delivery.
 
-To send a manual update, open `Actions -> Repo update to Telegram -> Run workflow`, enter a task, and run it. Codex will inspect the checked-out repository and write a Telegram message for that task instead of summarizing a push.
+To send a manual update, open `Actions -> Repo update to Telegram -> Run workflow`, enter a task, and run it. Codex will inspect the checked-out repository and write a Telegram message for that task instead of summarizing a push. `custom-prompt` still applies in manual mode, so you can define your message format once in YAML.
 
 You can also run it with GitHub CLI:
 
@@ -156,7 +156,7 @@ Example:
 | `effort` | `medium` | Reasoning effort. |
 | `mode` | `product` | `product`, `technical` or `hybrid`. |
 | `language` | `ru` | Output language. |
-| `custom-prompt` | empty | Extra instructions for the generated message. |
+| `custom-prompt` | empty | Style and format instructions for generated messages. Applies to both push updates and manual tasks. |
 | `custom-task` | empty | Manual task for `workflow_dispatch`. When set, Codex writes for this task instead of summarizing the push diff. |
 | `max-diff-chars` | `30000` | Diff sample limit passed to Codex. |
 | `dry-run` | `false` | Run Codex but skip Telegram sending. |

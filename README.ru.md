@@ -86,9 +86,9 @@ TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID
 ```
 
-При следующем push в `main` бот отправит сгенерированное обновление в Telegram.
+При следующем push в `main` бот отправит сгенерированное обновление в Telegram. Если Codex поймет, что push содержит только форматирование, linting, whitespace cleanup, сортировку импортов или другое no-op изменение без полезного эффекта для подписчиков, он может вернуть `ORCESTR_NOTIFY_SKIP`, и action ничего не отправит в Telegram.
 
-Чтобы отправить ручное сообщение, открой `Actions -> Repo update to Telegram -> Run workflow`, введи задачу и запусти workflow. Codex изучит checkout репозитория и напишет Telegram-сообщение по этой задаче, а не пересказ push.
+Чтобы отправить ручное сообщение, открой `Actions -> Repo update to Telegram -> Run workflow`, введи задачу и запусти workflow. Codex изучит checkout репозитория и напишет Telegram-сообщение по этой задаче, а не пересказ push. `custom-prompt` продолжает применяться в ручном режиме, поэтому формат сообщения можно один раз задать в YAML.
 
 То же самое можно запустить через GitHub CLI:
 
@@ -156,7 +156,7 @@ https://api.telegram.org/bot<TELEGRAM_BOT_TOKEN>/getUpdates
 | `effort` | `medium` | Reasoning effort. |
 | `mode` | `product` | `product`, `technical` или `hybrid`. |
 | `language` | `ru` | Язык сообщения. |
-| `custom-prompt` | empty | Дополнительные инструкции для сообщения. |
+| `custom-prompt` | empty | Инструкции по стилю и формату сообщения. Применяются и к push-обновлениям, и к ручным задачам. |
 | `custom-task` | empty | Ручная задача для `workflow_dispatch`. Если заполнена, Codex пишет по этой задаче вместо пересказа push diff. |
 | `max-diff-chars` | `30000` | Лимит diff sample для Codex. |
 | `dry-run` | `false` | Запустить Codex, но не отправлять сообщение в Telegram. |

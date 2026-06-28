@@ -7,6 +7,8 @@ const chatId = process.env.ORCESTR_TELEGRAM_CHAT_ID || "";
 const messageThreadId = process.env.ORCESTR_TELEGRAM_MESSAGE_THREAD_ID || "";
 const parseMode = process.env.ORCESTR_TELEGRAM_PARSE_MODE || "none";
 const finalMessage = process.env.ORCESTR_CODEX_FINAL_MESSAGE || readOutputFile();
+const skipMarker = "ORCESTR_NOTIFY_SKIP";
+const trimmedFinalMessage = finalMessage.trim();
 
 function readOutputFile() {
   try {
@@ -64,6 +66,15 @@ async function sendMessage(text) {
   }
 }
 
+if (!trimmedFinalMessage) {
+  throw new Error("Codex returned an empty message.");
+}
+
+if (trimmedFinalMessage === skipMarker) {
+  console.log("Codex returned ORCESTR_NOTIFY_SKIP. Telegram message skipped.");
+  process.exit(0);
+}
+
 if (!botToken) {
   throw new Error("telegram-bot-token is required.");
 }
@@ -74,10 +85,6 @@ if (!chatId) {
 
 if (messageThreadId && !/^\d+$/.test(messageThreadId)) {
   throw new Error("telegram-message-thread-id must be an integer.");
-}
-
-if (!finalMessage.trim()) {
-  throw new Error("Codex returned an empty message.");
 }
 
 for (const chunk of splitMessage(finalMessage)) {

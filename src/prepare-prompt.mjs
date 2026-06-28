@@ -153,6 +153,11 @@ const modeGuide = {
   hybrid: "Write a mixed update: first product impact, then short engineering notes.",
 };
 
+const customInstructions = customPrompt.trim()
+  ? `Style and format instructions. Apply these instructions to the final message in both push and manual task modes:
+${customPrompt.trim()}`
+  : "Style and format instructions: None.";
+
 const taskIntro = hasCustomTask
   ? `Task: inspect this checked-out repository and complete the manual task from .orcestr-repo-notifier/context.md.
 
@@ -162,12 +167,18 @@ ${safeCustomTask}`
 
 const messageRules = hasCustomTask
   ? `- Follow the manual task as the primary instruction.
+- Still apply the custom style and format instructions below unless they directly conflict with the manual task.
 - Use repository files and recent commit context only to make the message accurate.
 - Do not summarize the latest push unless the manual task asks for it.
 - Do not include repository name, branch, commit hashes, or compare URL unless the manual task explicitly asks for them.`
   : `- Use .orcestr-repo-notifier/context.md as the event context, but also inspect relevant repository files to understand product impact.
+- Automatic push updates are only for meaningful product progress that subscribers or product stakeholders should know about.
+- If the push only contains formatting, linting, whitespace, import sorting, generated lockfile churn, generated API/schema reformatting, documentation, CI/workflow changes, notifier changes, internal communication tooling, repo maintenance, or cleanup with no real user-facing product impact, output exactly: ORCESTR_NOTIFY_SKIP
+- If the best message would say that no visible app behavior changed, output exactly: ORCESTR_NOTIFY_SKIP
+- If the change is too small, too internal, or only about how updates are communicated, output exactly: ORCESTR_NOTIFY_SKIP
 - Include repository name, branch, and compare URL when available.
-- If impact is unclear, say what changed from the code structure without inventing product claims.`;
+- If impact is unclear, say what changed from the code structure without inventing product claims.
+- Do not invent warnings, follow-up checks, release-readiness concerns, retest requests, or "no visible behavior changed" bullets. Skip instead.`;
 
 const prompt = `You are Orcestr Repo Notifier.
 
@@ -188,8 +199,7 @@ Message settings:
 - Keep the message concise enough for Telegram. Prefer 5-10 short lines.
 ${messageRules}
 
-Custom instructions:
-${customPrompt || "None."}
+${customInstructions}
 `;
 
 writeFileSync(join(outputDir, "prompt.md"), prompt, "utf8");
