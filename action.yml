@@ -43,6 +43,18 @@ inputs:
     description: Manual task for workflow_dispatch runs. When set, Codex inspects the repository and writes a Telegram message for this task instead of summarizing the push diff.
     required: false
     default: ""
+  notify-branches:
+    description: Optional comma- or newline-separated branch names/patterns that may run the notifier on push events. Supports * wildcards. Empty means all branches allowed by the workflow trigger.
+    required: false
+    default: ""
+  require-commit-marker:
+    description: When true, push events run only if at least one pushed commit message contains commit-marker.
+    required: false
+    default: "false"
+  commit-marker:
+    description: Commit message marker used when require-commit-marker is true.
+    required: false
+    default: "[notifier]"
   sandbox:
     description: Codex sandbox mode.
     required: false
@@ -72,6 +84,12 @@ outputs:
   final-message:
     description: Final message returned by Codex.
     value: ${{ steps.codex.outputs.final-message }}
+  should-run:
+    description: Whether the notifier passed runtime filters.
+    value: ${{ steps.notifier_guard.outputs.should_run }}
+  skip-reason:
+    description: Reason why the notifier skipped before Codex.
+    value: ${{ steps.notifier_guard.outputs.skip_reason }}
 
 runs:
   using: composite
@@ -81,7 +99,18 @@ runs:
       with:
         node-version: "20"
 
+    - name: Check notifier filters
+      id: notifier_guard
+      shell: bash
+      env:
+        ORCESTR_NOTIFIER_CUSTOM_TASK: ${{ inputs.custom-task }}
+        ORCESTR_NOTIFIER_NOTIFY_BRANCHES: ${{ inputs.notify-branches }}
+        ORCESTR_NOTIFIER_REQUIRE_COMMIT_MARKER: ${{ inputs.require-commit-marker }}
+        ORCESTR_NOTIFIER_COMMIT_MARKER: ${{ inputs.commit-marker }}
+      run: node "$GITHUB_ACTION_PATH/src/check-run.mjs"
+
     - name: Prepare Codex prompt
+      if: ${{ steps.notifier_guard.outputs.should_run == 'true' }}
       shell: bash
       env:
         ORCESTR_NOTIFIER_MODE: ${{ inputs.mode }}
@@ -92,6 +121,7 @@ runs:
       run: node "$GITHUB_ACTION_PATH/src/prepare-prompt.mjs"
 
     - name: Run Codex
+      if: ${{ steps.notifier_guard.outputs.should_run == 'true' }}
       id: codex
       uses: openai/codex-action@v1
       with:
@@ -105,7 +135,7 @@ runs:
         codex-args: ${{ inputs.codex-args }}
 
     - name: Send Telegram message
-      if: ${{ inputs.dry-run != 'true' }}
+      if: ${{ steps.notifier_guard.outputs.should_run == 'true' && inputs.dry-run != 'true' }}
       shell: bash
       env:
         ORCESTR_TELEGRAM_BOT_TOKEN: ${{ inputs.telegram-bot-token }}

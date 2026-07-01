@@ -6,6 +6,7 @@ Describe the change briefly.
 
 - [ ] `node --check src/prepare-prompt.mjs`
 - [ ] `node --check src/send-telegram.mjs`
+- [ ] `node --check src/check-run.mjs`
 - [ ] Tested in GitHub Actions with `dry-run: true` if `action.yml` changed
 
 ## Security

@@ -11,6 +11,7 @@ The current implementation uses Node.js scripts without external runtime depende
 Before opening a pull request, run:
 
 ```bash
+node --check src/check-run.mjs
 node --check src/prepare-prompt.mjs
 node --check src/send-telegram.mjs
 ```

@@ -20,5 +20,6 @@ jobs:
 
       - name: Check Node scripts
         run: |
+          node --check src/check-run.mjs
           node --check src/prepare-prompt.mjs
           node --check src/send-telegram.mjs

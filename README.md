@@ -100,6 +100,48 @@ gh workflow run orcestr-repo-notifier.yml -f task="Tell subscribers about the ne
 
 Push context includes change stats: commit count, added lines, and deleted lines. You can reference these values from `custom-prompt`.
 
+## Optional Runtime Filters
+
+The recommended first filter is still the workflow trigger:
+
+```yaml
+on:
+  push:
+    branches:
+      - main
+```
+
+For repositories that use a broader workflow trigger, you can also filter inside the action before Codex runs. Empty filter inputs keep the default behavior: every push allowed by the workflow trigger can run.
+
+Run only on selected branches:
+
+```yaml
+- uses: Artasov/orcestr-repo-notifier@v1
+  with:
+    openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+    telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+    telegram-chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
+    notify-branches: |
+      main
+      release/*
+```
+
+Run only when at least one pushed commit message contains `[notifier]`:
+
+```yaml
+- uses: Artasov/orcestr-repo-notifier@v1
+  with:
+    openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+    telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+    telegram-chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
+    require-commit-marker: "true"
+    commit-marker: "[notifier]"
+```
+
+These runtime filters apply to `push` events. Manual `workflow_dispatch` runs with `custom-task` still run, so you can always ask Codex to write a one-off Telegram update.
+
+See also [`examples/commit-marker.yml`](./examples/commit-marker.yml).
+
 ## Telegram Setup
 
 Create a bot:
@@ -162,6 +204,9 @@ Example:
 | `language` | `ru` | Output language. |
 | `custom-prompt` | empty | Style and format instructions for generated messages. Applies to both push updates and manual tasks. |
 | `custom-task` | empty | Manual task for `workflow_dispatch`. When set, Codex writes for this task instead of summarizing the push diff. |
+| `notify-branches` | empty | Optional comma- or newline-separated branch names or patterns for push events. Supports `*` wildcards. Empty means no extra action-level branch filter. |
+| `require-commit-marker` | `false` | When `true`, push events run only if at least one pushed commit message contains `commit-marker`. |
+| `commit-marker` | `[notifier]` | Commit message marker used by `require-commit-marker`. |
 | `max-diff-chars` | `30000` | Diff sample limit passed to Codex. |
 | `dry-run` | `false` | Run Codex but skip Telegram sending. |
 
