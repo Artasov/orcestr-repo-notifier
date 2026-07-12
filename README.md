@@ -9,7 +9,7 @@
 
 [![Marketplace](https://img.shields.io/badge/GitHub%20Marketplace-Orcestr%20Repo%20Notifier-blue)](https://github.com/marketplace/actions/orcestr-repo-notifier)
 [![Validate](https://github.com/Artasov/orcestr-repo-notifier/actions/workflows/validate.yml/badge.svg)](https://github.com/Artasov/orcestr-repo-notifier/actions/workflows/validate.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](./LICENSE)
 
 Turn GitHub pushes into clear Telegram updates.
 
@@ -215,6 +215,12 @@ Example:
 Do not run this action with secrets on untrusted pull request events. Start with `push` events on protected branches.
 
 Keep `OPENAI_API_KEY`, `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` in GitHub Actions secrets only.
+
+## License
+
+Licensed under the [Mozilla Public License 2.0](./LICENSE). Commercial use is permitted; changes
+to MPL-covered files remain subject to the MPL. See [NOTICE](./NOTICE) and
+[TRADEMARKS.md](./TRADEMARKS.md).
 
 ## Links
 

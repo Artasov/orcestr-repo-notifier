@@ -9,7 +9,7 @@
 
 [![Marketplace](https://img.shields.io/badge/GitHub%20Marketplace-Orcestr%20Repo%20Notifier-blue)](https://github.com/marketplace/actions/orcestr-repo-notifier)
 [![Validate](https://github.com/Artasov/orcestr-repo-notifier/actions/workflows/validate.yml/badge.svg)](https://github.com/Artasov/orcestr-repo-notifier/actions/workflows/validate.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](./LICENSE)
 
 Превращает GitHub pushes в понятные Telegram-обновления.
 
@@ -170,6 +170,12 @@ https://api.telegram.org/bot<TELEGRAM_BOT_TOKEN>/getUpdates
 Не запускай этот action с secrets на непроверенных pull request events. Начни с `push` в защищенные ветки.
 
 Храни `OPENAI_API_KEY`, `TELEGRAM_BOT_TOKEN` и `TELEGRAM_CHAT_ID` только в GitHub Actions secrets.
+
+## Лицензия
+
+Проект распространяется по [Mozilla Public License 2.0](./LICENSE). Коммерческое использование
+разрешено; изменения файлов под MPL остаются на условиях MPL. См. [NOTICE](./NOTICE) и
+[TRADEMARKS.md](./TRADEMARKS.md).
 
 ## Ссылки
 
