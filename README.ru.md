@@ -19,6 +19,16 @@
 
 Часть экосистемы [Orcestr](https://orcestr.com).
 
+## Статус
+
+| Пункт | Значение |
+| --- | --- |
+| Релиз | `v1.2.0` |
+| Статус | Stable |
+| Платформа | GitHub Actions |
+| Доставка | Telegram-чаты, каналы и темы форума |
+| Генератор | Codex |
+
 ## Установка
 
 Открой action в [GitHub Marketplace](https://github.com/marketplace/actions/orcestr-repo-notifier) или добавь вручную.

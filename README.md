@@ -19,6 +19,16 @@ It can be used for private team updates or for keeping a public project history 
 
 Part of the [Orcestr](https://orcestr.com) ecosystem.
 
+## Status
+
+| Item | Value |
+| --- | --- |
+| Release | `v1.2.0` |
+| Status | Stable |
+| Platform | GitHub Actions |
+| Delivery | Telegram chats, channels and forum topics |
+| Generator | Codex |
+
 ## Install
 
 Open the action in [GitHub Marketplace](https://github.com/marketplace/actions/orcestr-repo-notifier), or add it manually.
