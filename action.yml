@@ -22,7 +22,7 @@ inputs:
   model:
     description: Codex model.
     required: false
-    default: gpt-5.5
+    default: gpt-5.6-luna
   effort:
     description: Codex reasoning effort.
     required: false

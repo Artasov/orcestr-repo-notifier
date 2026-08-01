@@ -14,6 +14,7 @@ Before opening a pull request, run:
 node --check src/check-run.mjs
 node --check src/prepare-prompt.mjs
 node --check src/send-telegram.mjs
+node --test tests/*.test.mjs
 ```
 
 If you change `action.yml`, also test the action in a real GitHub repository with `dry-run: true` before relying on Telegram delivery.
