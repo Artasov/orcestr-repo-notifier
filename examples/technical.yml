@@ -23,7 +23,7 @@ jobs:
           telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           telegram-chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
           mode: technical
-          model: gpt-5.6-luna
-          effort: medium
+          model: gpt-5.5
+          effort: high
           custom-prompt: |
             Mention risky changes, config changes, migrations, background jobs, and deployment notes if present.

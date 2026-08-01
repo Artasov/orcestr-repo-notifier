@@ -23,7 +23,7 @@
 
 | Пункт | Значение |
 | --- | --- |
-| Релиз | `v1.3.0` |
+| Релиз | `v1.2.0` |
 | Статус | Stable |
 | Платформа | GitHub Actions |
 | Доставка | Telegram-чаты, каналы и темы форума |
@@ -80,7 +80,7 @@ jobs:
           custom-task: ${{ github.event.inputs.task }}
           mode: product
           language: ru
-          model: gpt-5.6-luna
+          model: gpt-5.5
           effort: medium
           custom-prompt: |
             Пиши короткое Telegram-сообщение для владельца продукта и команды.
@@ -155,8 +155,7 @@ https://api.telegram.org/bot<TELEGRAM_BOT_TOKEN>/getUpdates
     telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
     telegram-chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
     mode: technical
-    model: gpt-5.6-luna
-    effort: medium
+    effort: high
 ```
 
 ## Настройки
@@ -167,7 +166,7 @@ https://api.telegram.org/bot<TELEGRAM_BOT_TOKEN>/getUpdates
 | `telegram-bot-token` | required | Telegram bot token из BotFather. |
 | `telegram-chat-id` | required | Целевой chat, group или channel id. |
 | `telegram-message-thread-id` | empty | Optional id темы в Telegram forum group. |
-| `model` | `gpt-5.6-luna` | Codex model. Значение по умолчанию рассчитано на экономичные массовые обновления репозиториев; для необычно сложного анализа можно явно выбрать более мощный tier. |
+| `model` | `gpt-5.5` | Codex model. |
 | `effort` | `medium` | Reasoning effort. |
 | `mode` | `product` | `product`, `technical` или `hybrid`. |
 | `language` | `ru` | Язык сообщения. |

@@ -23,7 +23,7 @@ Part of the [Orcestr](https://orcestr.com) ecosystem.
 
 | Item | Value |
 | --- | --- |
-| Release | `v1.3.0` |
+| Release | `v1.2.0` |
 | Status | Stable |
 | Platform | GitHub Actions |
 | Delivery | Telegram chats, channels and forum topics |
@@ -80,7 +80,7 @@ jobs:
           custom-task: ${{ github.event.inputs.task }}
           mode: product
           language: ru
-          model: gpt-5.6-luna
+          model: gpt-5.5
           effort: medium
           custom-prompt: |
             Write a short Telegram update for the product owner and team.
@@ -197,8 +197,7 @@ Example:
     telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
     telegram-chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
     mode: technical
-    model: gpt-5.6-luna
-    effort: medium
+    effort: high
 ```
 
 ## Inputs
@@ -209,7 +208,7 @@ Example:
 | `telegram-bot-token` | required | Telegram bot token from BotFather. |
 | `telegram-chat-id` | required | Target chat, group or channel id. |
 | `telegram-message-thread-id` | empty | Optional Telegram forum topic id. |
-| `model` | `gpt-5.6-luna` | Codex model. The default targets cost-efficient, high-volume repository updates; override it when a repository needs a stronger tier for unusually complex analysis. |
+| `model` | `gpt-5.5` | Codex model. |
 | `effort` | `medium` | Reasoning effort. |
 | `mode` | `product` | `product`, `technical` or `hybrid`. |
 | `language` | `ru` | Output language. |
