@@ -110,6 +110,51 @@ gh workflow run orcestr-repo-notifier.yml -f task="Tell subscribers about the ne
 
 Push context включает stats изменений: количество коммитов, добавленных строк и удаленных строк. Эти значения можно использовать через `custom-prompt`.
 
+## Опциональные runtime-фильтры
+
+Основной фильтр лучше задавать на уровне workflow trigger:
+
+```yaml
+on:
+  push:
+    branches:
+      - main
+```
+
+Если workflow trigger шире, action может отфильтровать событие до запуска
+Codex. Пустые значения сохраняют обычное поведение: разрешён любой push,
+допущенный workflow trigger.
+
+Запуск только для выбранных веток:
+
+```yaml
+- uses: Artasov/orcestr-repo-notifier@v1
+  with:
+    openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+    telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+    telegram-chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
+    notify-branches: |
+      main
+      release/*
+```
+
+Запуск только если хотя бы один commit message содержит `[notifier]`:
+
+```yaml
+- uses: Artasov/orcestr-repo-notifier@v1
+  with:
+    openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+    telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+    telegram-chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
+    require-commit-marker: "true"
+    commit-marker: "[notifier]"
+```
+
+Runtime-фильтры применяются к `push`. Ручной `workflow_dispatch` с
+`custom-task` продолжает работать независимо от них.
+
+См. также [`examples/commit-marker.yml`](./examples/commit-marker.yml).
+
 ## Настройка Telegram
 
 Создай бота:
@@ -172,7 +217,14 @@ https://api.telegram.org/bot<TELEGRAM_BOT_TOKEN>/getUpdates
 | `language` | `ru` | Язык сообщения. |
 | `custom-prompt` | empty | Инструкции по стилю и формату сообщения. Применяются и к push-обновлениям, и к ручным задачам. |
 | `custom-task` | empty | Ручная задача для `workflow_dispatch`. Если заполнена, Codex пишет по этой задаче вместо пересказа push diff. |
+| `notify-branches` | empty | Имена или patterns веток через запятую или новую строку для `push`; поддерживается `*`. Пустое значение не добавляет фильтр поверх workflow trigger. |
+| `require-commit-marker` | `false` | При `true` push запускается, только если хотя бы один commit message содержит `commit-marker`. |
+| `commit-marker` | `[notifier]` | Маркер commit message для `require-commit-marker`. |
+| `sandbox` | `read-only` | Режим sandbox для Codex. |
+| `safety-strategy` | `drop-sudo` | Safety strategy Codex Action: `drop-sudo`, `unprivileged-user`, `read-only` или `unsafe`. |
+| `codex-args` | empty | Дополнительные аргументы для `codex exec`. |
 | `max-diff-chars` | `30000` | Лимит diff sample для Codex. |
+| `telegram-parse-mode` | `none` | Parse mode Telegram: `none`, `HTML`, `Markdown` или `MarkdownV2`. |
 | `dry-run` | `false` | Запустить Codex, но не отправлять сообщение в Telegram. |
 
 ## Безопасность
@@ -191,7 +243,7 @@ https://api.telegram.org/bot<TELEGRAM_BOT_TOKEN>/getUpdates
 
 - [GitHub Marketplace](https://github.com/marketplace/actions/orcestr-repo-notifier)
 - [Сайт Orcestr](https://orcestr.com)
-- [Orcestr overview](https://github.com/Artasov/orcestr-overview)
+- [Orcestr overview](https://github.com/Artasov/orcestr-os)
 - [Contributing](./CONTRIBUTING.md)
 - [Security](./SECURITY.md)
 - [License](./LICENSE)

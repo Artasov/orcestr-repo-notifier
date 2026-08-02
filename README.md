@@ -217,7 +217,11 @@ Example:
 | `notify-branches` | empty | Optional comma- or newline-separated branch names or patterns for push events. Supports `*` wildcards. Empty means no extra action-level branch filter. |
 | `require-commit-marker` | `false` | When `true`, push events run only if at least one pushed commit message contains `commit-marker`. |
 | `commit-marker` | `[notifier]` | Commit message marker used by `require-commit-marker`. |
+| `sandbox` | `read-only` | Codex sandbox mode. |
+| `safety-strategy` | `drop-sudo` | Codex Action safety strategy: `drop-sudo`, `unprivileged-user`, `read-only` or `unsafe`. |
+| `codex-args` | empty | Additional arguments passed to `codex exec`. |
 | `max-diff-chars` | `30000` | Diff sample limit passed to Codex. |
+| `telegram-parse-mode` | `none` | Telegram parse mode: `none`, `HTML`, `Markdown` or `MarkdownV2`. |
 | `dry-run` | `false` | Run Codex but skip Telegram sending. |
 
 ## Security
@@ -236,7 +240,7 @@ to MPL-covered files remain subject to the MPL. See [NOTICE](./NOTICE) and
 
 - [GitHub Marketplace](https://github.com/marketplace/actions/orcestr-repo-notifier)
 - [Orcestr website](https://orcestr.com)
-- [Orcestr overview](https://github.com/Artasov/orcestr-overview)
+- [Orcestr overview](https://github.com/Artasov/orcestr-os)
 - [Contributing](./CONTRIBUTING.md)
 - [Security](./SECURITY.md)
 - [License](./LICENSE)
